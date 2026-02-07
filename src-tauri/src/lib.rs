@@ -1,12 +1,40 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 
+use unicode_width::UnicodeWidthChar;
+
 #[allow(dead_code)]
-fn rectangle_frame() -> String {
-    return [
-            "┌ ─ ┐",
-            "└ ─ ┘",
-        ]
-        .join("\n");
+fn rectangle_frame(text: &str) -> String {
+    if text.is_empty() {
+        return empty_rectangle_frame();
+    }
+    rectangle_frame_with_text(text)
+}
+
+fn empty_rectangle_frame() -> String {
+    [
+        "┌ ─ ┐",
+        "└ ─ ┘",
+    ]
+    .join("\n")
+}
+
+fn rectangle_frame_with_text(text: &str) -> String {
+    [
+        format!("┌ {} ┐", outputs_horizontal_border(text)),
+        format!("│ {} │", text),
+        format!("└ {} ┘", outputs_horizontal_border(text)),
+    ]
+    .join("\n")
+}
+
+fn outputs_horizontal_border(text: &str) -> String {
+    text.chars()
+        .map(|c| if is_fullwidth(c) { 'ー' } else { '-' })
+        .collect()
+}
+
+fn is_fullwidth(c: char) -> bool {
+    c.width_cjk().unwrap_or(1) == 2
 }
 
 #[tauri::command]
@@ -25,7 +53,18 @@ mod tests {
             "└ ─ ┘",
         ]
         .join("\n");
-        assert_eq!(rectangle_frame(), expected);
+        assert_eq!(rectangle_frame(""), expected);
+    }
+
+    #[test]
+    fn rectangle_frame_returns_expected_shape_with_text() {
+        let expected = [
+            "┌ ー-ー-ー-ー-ー- ┐",
+            "│ あaいbうcえeおo │",
+            "└ ー-ー-ー-ー-ー- ┘",
+        ]
+        .join("\n");
+        assert_eq!(rectangle_frame("あaいbうcえeおo"), expected);
     }
 }
 
