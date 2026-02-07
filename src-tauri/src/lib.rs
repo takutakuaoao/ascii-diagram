@@ -47,7 +47,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn rectangle_frame_returns_expected_shape() {
+    fn rectangle_frame_displays_empty_rectangle_when_text_is_empty() {
         let expected = [
             "┌ ─ ┐",
             "└ ─ ┘",
@@ -57,7 +57,7 @@ mod tests {
     }
 
     #[test]
-    fn rectangle_frame_returns_expected_shape_with_text() {
+    fn rectangle_frame_displays_rectangle_with_hyphens_matching_fullwidth_halfwidth_when_text_is_present() {
         let expected = [
             "┌ ー-ー-ー-ー-ー- ┐",
             "│ あaいbうcえeおo │",
