@@ -2,6 +2,8 @@
 
 use unicode_width::UnicodeWidthChar;
 
+const FRAME_CORNER: char = '+';
+
 #[allow(dead_code)]
 fn rectangle_frame(text: &str) -> String {
     if text.is_empty() {
@@ -12,17 +14,17 @@ fn rectangle_frame(text: &str) -> String {
 
 fn empty_rectangle_frame() -> String {
     [
-        "┌ ─ ┐",
-        "└ ─ ┘",
+        format!("{} ─ {}", FRAME_CORNER, FRAME_CORNER),
+        format!("{} ─ {}", FRAME_CORNER, FRAME_CORNER),
     ]
     .join("\n")
 }
 
 fn rectangle_frame_with_text(text: &str) -> String {
     [
-        format!("┌ {} ┐", outputs_horizontal_border(text)),
+        format!("{} {} {}", FRAME_CORNER, outputs_horizontal_border(text), FRAME_CORNER),
         format!("│ {} │", text),
-        format!("└ {} ┘", outputs_horizontal_border(text)),
+        format!("{} {} {}", FRAME_CORNER, outputs_horizontal_border(text), FRAME_CORNER),
     ]
     .join("\n")
 }
@@ -49,8 +51,8 @@ mod tests {
     #[test]
     fn rectangle_frame_displays_empty_rectangle_when_text_is_empty() {
         let expected = [
-            "┌ ─ ┐",
-            "└ ─ ┘",
+            "+ ─ +",
+            "+ ─ +",
         ]
         .join("\n");
         assert_eq!(rectangle_frame(""), expected);
@@ -59,9 +61,9 @@ mod tests {
     #[test]
     fn rectangle_frame_displays_rectangle_with_hyphens_matching_fullwidth_halfwidth_when_text_is_present() {
         let expected = [
-            "┌ ー-ー-ー-ー-ー- ┐",
+            "+ ー-ー-ー-ー-ー- +",
             "│ あaいbうcえeおo │",
-            "└ ー-ー-ー-ー-ー- ┘",
+            "+ ー-ー-ー-ー-ー- +",
         ]
         .join("\n");
         assert_eq!(rectangle_frame("あaいbうcえeおo"), expected);
